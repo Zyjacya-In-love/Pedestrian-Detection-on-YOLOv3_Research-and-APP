@@ -15,7 +15,7 @@ This is a repository that includes Pedestrian-Detection-on-YOLOv3_Research-and-A
 
 
 ### Table of Contents
-- <a href='## 1. Introduction'>1. Introduction</a>
+- <a href='##1.Introduction'>1. Introduction</a>
 - <a href='#Dependencies'>Dependencies</a>
 - <a href='#Installation'>Installation</a>
 - <a href='#Support'>Support Powerfully</a>
