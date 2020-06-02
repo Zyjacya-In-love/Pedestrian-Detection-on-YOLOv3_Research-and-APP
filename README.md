@@ -9,13 +9,10 @@
 
 <p align="center">
     <img alt="GitHub" src="https://img.shields.io/github/license/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP">
-
     <img src="https://img.shields.io/badge/repo%20size-37%20MB-blue" alt="Repo size">
     <img src="https://img.shields.io/badge/code%20size-11.83%20MB-blue" alt="Code size">
-
     <img src="https://img.shields.io/github/forks/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=forks&style=social" alt="GitHub forks">
     <img src="https://img.shields.io/github/stars/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=stars&style=social" alt="GitHub stars">
-
     <img src="https://img.shields.io/github/last-commit/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?style=flat" alt="commit">
 </p>
 
