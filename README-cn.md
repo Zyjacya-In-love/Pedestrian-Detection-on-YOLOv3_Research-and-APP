@@ -4,7 +4,7 @@
 
 <p align="center">
     Data+Train+Evaluate+App 4in1 repo within the paper
-<a href='README-cn.md'>[中文版]</a> <u><b>[English]</b></u>
+<u><b>[中文版]</b></u> <a href='README-en.md'>[English]</a>
 </p>
 
 <p align="center">
@@ -20,13 +20,13 @@
     <img src="https://img.shields.io/github/last-commit/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?style=flat" alt="commit">
 </p>
 
-This is a repository that includes Pedestrian-Detection-on-YOLOv3_Research-and-APP, a 2020 undergraduate graduation project, **ALL codes**. The graduation project which has the **Data+Train+Evaluate+App 4in1 repo** Coded and paper Wrote by Ziqiang Xu from [Jiangnan University](https://www.jiangnan.edu.cn/).
+这是用于存储 **基于YOLO网络的行人检测研究与应用** 2020本科毕业设计 全部代码 的仓库。这个毕设项目的 4 个部分包括 **数据集+YOLO训练+模型评估+网站应用 都在这个仓库里**，并且代码编写和论文撰写工作全部由我一人完成。
 
 如果你对这个项目的一些原理或具体细节感兴趣的话，可以查看我的论文 ： [TODO]()。
 
 下面仅仅是整个项目的工作流程和 repo 中代码文件的使用方法。
 
-### Table of Contents
+### 目录
 - <a href='#1-Introduction'>1. Introduction</a>
 - <a href='#2-Data'>2. Data</a>
 - <a href='#3-YOLO-Train'>3. YOLO Train</a>
