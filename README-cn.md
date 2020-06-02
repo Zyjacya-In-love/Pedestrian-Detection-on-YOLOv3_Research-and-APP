@@ -4,7 +4,7 @@
 
 <p align="center">
     Data+Train+Evaluate+App 4in1 repo within the paper
-<u><b>[中文版]</b></u> <a href='README-en.md'>[English]</a>
+<u><b>[中文版]</b></u> <a href='README.md'>[English]</a>
 </p>
 
 <p align="center">

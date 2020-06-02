@@ -1,15 +1,14 @@
 <p align=center>
-    <img src="./__READMEimages__/first_logo9.png" >
+    <img src="./__READMEimages__/first_logo15.png" alt="Pedestrian Detection on YOLOv3 Research and APP">
 </p>
 
 <p align="center">
     Data+Train+Evaluate+App 4in1 repo within the paper
-<a href='README-cn.md'>[中文版]</a> <u><b>[English]</b></u>
+<a href='README-cn.md'>[中文版（TODO）]</a> <u><b>[English]</b></u>
 </p>
 
 <p align="center">
     <img alt="GitHub" src="https://img.shields.io/github/license/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP">
-    <!-- <a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/lc-soft/LCUI.svg" alt="License"></a> -->
 
     <img src="https://img.shields.io/badge/repo%20size-37%20MB-blue" alt="Repo size">
     <img src="https://img.shields.io/badge/code%20size-11.83%20MB-blue" alt="Code size">
@@ -22,13 +21,10 @@
 
 This is a repository that includes Pedestrian-Detection-on-YOLOv3_Research-and-APP, a 2020 undergraduate graduation project, **ALL codes**. The graduation project which has the **Data+Train+Evaluate+App 4in1 repo** Coded and paper Wrote by Ziqiang Xu from [Jiangnan University](https://www.jiangnan.edu.cn/).
 
-如果你对这个项目的一些原理或具体细节感兴趣的话，可以查看我的论文 ： [TODO]()。
-
-下面仅仅是整个项目的工作流程和 repo 中代码文件的使用方法。
 
 ### Table of Contents
 - <a href='#1-Introduction'>1. Introduction</a>
-- <a href='#2-Data'>2. Data</a>
+- <a href='#2-Dataset'>2. Dataset</a>
 - <a href='#3-YOLO-Train'>3. YOLO Train</a>
 - <a href='#4-Model-Evaluation'>4. Model Evaluation</a>
 - <a href='#5-Web-App'>5. Web App</a>
@@ -37,30 +33,16 @@ This is a repository that includes Pedestrian-Detection-on-YOLOv3_Research-and-A
 
 ## 1. Introduction
 
-行人检测是目标检测中的一个经典问题，它要解决的问题是：找出图像或视频帧中所有的行人，包括位置和大小，用矩形框表示。
+**Pedestrian Detection** is a **subset** of **Object Detection** which only have one class of **person**. It aim to find out all pedestrians in the image or video's each frame, expressed location and size with **bounding-boxes**, just like this:
 
-<img src="./__READMEimages__/pedestrian-detection-demo.BMP" height="270">
+<img src="./__READMEimages__/pedestrian-detection-demo.BMP" height="200">
 
-YOLO (You Look Only Once) 算法是一种先进的实时目标检测方法，它以只处理一次图片同时得到位置和分类而得名，速度快且结构简单。
+**YOLO (You Look Only Once)** is an advanced real-time object detection method. It is famous for processing pictures only once to get both location and classification, compared with previous object detection methods, while having similar accuracy with the state-of-the-art method, **YOLO run faster**.
 
-本项目在对YOLO算法研究的基础上，在行人数据集上进行实验，最终依据训练好的模型设计一个行人检测应用。
-
-具体工作流程如下：
-
-首先查找选择下载并收集整理行人数据集，将所有数据分割出训练集和测试集，然后提取每张图片的标注并统一格式。
-
-之后基于 **Keras** 实现的 **YOLOv3** 网络（[keras-yolo3@qqwweee](https://github.com/qqwweee/keras-yolo3)），对其进行一定的调整以适合行人检测问题。根据数据集标注使用 **K-means聚类** 确定出 9 个先验框（anchor），并基于 anchors 将全部训练数据投入训练。当然，期间存在小数据 Debug 的过程。
-
-然后对训练完成得到的最终模型进行多种评估测试，并将它与其他算法模型进行对比分析。
-
-最终，依据训练好的模型基于 **Flask** 设计搭建一个行人检测网站应用实例，实现对输入的实时视频流（摄像头）、静态图像或视频的行人检测结果的可视化。
-
-<p align="center">
-<img src="./__READMEimages__/flow.png" width="210">
-</p>
+This project research Pedestrian Detection on YOLOv3 including **Data-convert,** **keras-Train**([keras-yolo3@qqwweee](https://github.com/qqwweee/keras-yolo3)) and **model-Evaluate**. Finally I also build a **Web App** base on **Flask** to realize the visualization of pedestrian detection results of the real-time webcam, image, or video.
 
 
-## 2. Data
+## 2. Dataset
 
 选择后下载的共 4 个数据集： Microsoft 的 COCO 数据集、PASCAL 的 VOC 数据集、INRIA 行人数据集以及 Caltech 行人数据集，前 3 个用于训练和基础测试，Caltech 用于和其他算法模型比较，实验（代码测试）使用的是 INRIA 和 VOC07。需要说明的是 COCO 和 VOC 包含多类别甚至多方向，只使用其中的 **person** 类的 **目标检测** 部分注释。而 Caltech 数据集仅用于比较，未多做研究，稍具体的操作将在 **4. Model Evaluation** 中说明。
 
