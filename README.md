@@ -34,84 +34,83 @@ This is a repository that includes Pedestrian-Detection-on-YOLOv3_Research-and-A
 
 <img src="./__READMEimages__/pedestrian-detection-demo.BMP" height="200">
 
-**YOLO (You Look Only Once)** is an advanced real-time object detection method. It is famous for processing pictures only once to get both location and classification, compared with previous object detection methods, while having similar accuracy with the state-of-the-art method, **YOLO run faster**.
+**YOLO (You Look Only Once)** is an advanced real-time object detection method. It is famous for processing images only once to get both location and classification, compared with previous object detection methods, while having similar accuracy with the state-of-the-art method, **YOLO run faster**.
 
-This project research Pedestrian Detection on YOLOv3 including **Data-convert,** **keras-Train**([keras-yolo3@qqwweee](https://github.com/qqwweee/keras-yolo3)) and **model-Evaluate**. Finally I also build a **Web App** base on **Flask** to realize the visualization of pedestrian detection results of the real-time webcam, image, or video.
+This project researches Pedestrian Detection on YOLOv3 including **Data-convert,** **keras-Train**([keras-yolo3@qqwweee](https://github.com/qqwweee/keras-yolo3)) and **model-Evaluate**. Finally I also build a **Web App** base on **Flask** to realize the visualization of pedestrian detection results of the real-time webcam, image, or video (whose language is chinese, but you can easily use by following 5. Web App or just translating).
 
 
 ## 2. Dataset
 
-选择后下载的共 4 个数据集： Microsoft 的 COCO 数据集、PASCAL 的 VOC 数据集、INRIA 行人数据集以及 Caltech 行人数据集，前 3 个用于训练和基础测试，Caltech 用于和其他算法模型比较，实验（代码测试）使用的是 INRIA 和 VOC07。需要说明的是 COCO 和 VOC 包含多类别甚至多方向，只使用其中的 **person** 类的 **目标检测** 部分注释。而 Caltech 数据集仅用于比较，未多做研究，稍具体的操作将在 **4. Model Evaluation** 中说明。
+### 2.1 Download
+#### Microsoft COCO
+**official link :** [http://cocodataset.org/](http://cocodataset.org/)
 
-### 2.1 Download+Unzip
-#### COCO
+**Download link (2017 about 19GB) :**
+```
+http://images.cocodataset.org/zips/train2017.zip
+http://images.cocodataset.org/zips/val2017.zip
+http://images.cocodataset.org/annotations/annotations_trainval2017.zip
+```
 
-**官网：** [http://cocodataset.org/](http://cocodataset.org/)
-
-下载 2017 版 约 19GB，下载链接：
-
-训练集： [http://images.cocodataset.org/zips/train2017.zip](http://images.cocodataset.org/zips/train2017.zip)
-
-验证集： [http://images.cocodataset.org/zips/val2017.zip](http://images.cocodataset.org/zips/val2017.zip)
-
-训练集+验证集注释： [http://images.cocodataset.org/annotations/annotations_trainval2017.zip](http://images.cocodataset.org/annotations/annotations_trainval2017.zip) （其中前缀为 instances 的 json 文件中包含目标检测的注释）
+annotation just use `instances_train2017.json`+`instances_val2017.json`
 
 #### PASCAL VOC
+**official link :** [http://host.robots.ox.ac.uk:8080/pascal/VOC/](http://host.robots.ox.ac.uk:8080/pascal/VOC/)
 
-**官网：** [http://host.robots.ox.ac.uk:8080/pascal/VOC/](http://host.robots.ox.ac.uk:8080/pascal/VOC/)
-
-以下是 YOLO 原作者提供的下载链接，下载 07 和 12 版，大约 2.7GB。
-
-```bash
-wget https://pjreddie.com/media/files/VOCtrainval_11-May-2012.tar
-wget https://pjreddie.com/media/files/VOCtrainval_06-Nov-2007.tar
-wget https://pjreddie.com/media/files/VOCtest_06-Nov-2007.tar
+**Download link (07+12 about 2.7GB) :**
+```
+https://pjreddie.com/media/files/VOCtrainval_11-May-2012.tar
+https://pjreddie.com/media/files/VOCtrainval_06-Nov-2007.tar
+https://pjreddie.com/media/files/VOCtest_06-Nov-2007.tar
 ```
 
-解压：
+after unzip just use `/JPEGImages`+`/Annotations`
+
+**PS:** unzip `*.tar` file just like
 ```bash
-tar xf VOCtrainval_11-May-2012.tar
-tar xf VOCtrainval_06-Nov-2007.tar
-tar xf VOCtest_06-Nov-2007.tar
+tar xf *.tar
 ```
 
-解压后的文件夹中 ‘/JPEGImages’ 中是图片，‘/Annotations’ 中包含以 xml 文件存储的目标检测注释。
+#### INRIA Person Dataset
+~~**official link :** [http://pascal.inrialpes.fr/data/human/](http://pascal.inrialpes.fr/data/human/)~~ down
 
-#### INRIA
+**Download link (about 969MB) :**
 
-**官网：** [http://pascal.inrialpes.fr/data/human/](http://pascal.inrialpes.fr/data/human/)
+1. ~~official link : [http://pascal.inrialpes.fr/data/human/](http://pascal.inrialpes.fr/data/human/)~~ down
 
-**下载地址：** [ftp://ftp.inrialpes.fr/pub/lear/douze/data/INRIAPerson.tar](ftp://ftp.inrialpes.fr/pub/lear/douze/data/INRIAPerson.tar) 约 969 MB
+2. Baidu Cloud Disk(中文) : [https://pan.baidu.com/s/12TYw-8U9sxz9cUu2vxzvGQ](https://pan.baidu.com/s/12TYw-8U9sxz9cUu2vxzvGQ) password: jxqu
 
-解压：
-```bash
-tar xf INRIAPerson.tar
-```
-解压后的文件夹中 ‘/Train’ 和 ‘/Test’ 文件夹分别包含训练集和测试集的图片和注释，而同目录下其余 4 个文件夹并未用到。
+2. Google Drive : [https://drive.google.com/file/d/1wTxod2BhY_HUkEdDYRVSuw-nDuqrgCu7/view?usp=sharing](https://drive.google.com/file/d/1wTxod2BhY_HUkEdDYRVSuw-nDuqrgCu7/view?usp=sharing)
+
+after unzip just use `/Train`+`/Test`
+
+
 
 ### 2.2 Data distribution
 
-COCO、VOC 和 INRIA 数据集的训练集、验证集和测试集所包含的数量如下表所示，VOC2007 与 VOC2012 是两个不同的数据集，我将他们分别列出来。
+<img src="./__READMEimages__/data_table-en1-big.png" width="400">
 
-<img src="./__READMEimages__/data_table1.png" width="400">
+**for train & test dataset divide**
 
-对于训练集与测试集的划分，我使用了 COCO 的 train 和 VOC 的 07+12 的 train+val，以及 INRIA 的 train 作为训练数据，共 13w+ 张图片，7w+ 张正例，6.5w+ 张负例。测试用 COCO 的 val 和 VOC 的 07 的 test 以及 INRIA 的 test，共 1w+ 张图片，包含约 5w 张正例，5w 张负例。具体的数据分布情况如下表所示。
+> train = (COCO train) + (VOC 07+12 train+val) + (INRIA train)
+>
+> test = (COCO val) + (VOC 07 test) + (INRIA test)
 
-<img src="./__READMEimages__/data_table2.png">
+<img src="./__READMEimages__/data_table-en2-big2.png">
 
 ### 2.3 Convert annotation format
 
-由于每个数据集的标注格式不尽相同，我用一个统一的格式将所有边界框（真实框：Ground Truth）标注整合出来。
+These dataset's annotation format is not same, so convert Ground-Truth to a Uniform format.
 
-训练集和测试集各一个 txt 文件，其中每行一张图片，格式如下（实际没有[ ]）：
+The train and test set are stored as a TXT file respectively, One row for One image, just like the following (without [ ]):
 ```bash
-[图片位置] [边界框1] [边界框2] [边界框3] … [边界框n]
+[image_path] [bbox1] [bbox2] [bbox3] … [bboxn]
 ```
-其中边界框的格式为：
+bbox format:
 ```bash
-[左上角x, 左上角y, 右下角x, 右下角y, 0]
+[x_min,y_min,x_max,y_max,0]
 ```
-PS: 0 是类别编号，因为只有一类，所以只需要 0
+PS: 0 is class id，because only one class(person), 0 is enough
 
 For example:
 ```txt
@@ -122,9 +121,10 @@ For example:
 
 ### 2.4 Batch processing
 
-对于 **2. Data** 文件夹中的脚本是分数据集编写的，所需的目录结构如下所示。
+For **./"2. Data"**, script are prepared individually by dataset. And the required directory structure is shown below before run python script.
+
 ```
-.
+./"2. Data"
 ├─COCO
 │  ├─annotations
 │  ├─train2017
@@ -142,16 +142,18 @@ For example:
 └─INRIA_annotation.py
 ```
 
-标注转换得到的 txt 文件是追加写入，所以脚本直接顺序执行即可。
+All python files are append write, so run separately is ok.
+
 ```bash
 python coco_annotation.py
 python voc_annotation.py
 python INRIA_annotation.py
 ```
 
-**PS：** 脚本在转换格式的同时，会将图片整合到一个 data 文件夹，训练集和测试集的图片分别放在其下的 train 和 test 文件夹中。
+**PS:** the script will copy images to a **new folder** (./data/train or ./data/test)
 
-综上，最终会在 **2. Data** 文件夹中添加的目录结构如下所示。
+After run script, the directory structure that will be **added** in the **2. Data** folder is as follows
+
 ```
 +
 ├─data
