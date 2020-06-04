@@ -19,7 +19,7 @@ def convert_annotation(year, image_id, list_file):
     for obj in root.iter('object'):
         difficult = obj.find('difficult').text
         cls = obj.find('name').text
-        if cls not in classes or int(difficult)==1:
+        if cls not in classes:
             continue
         cls_id = classes.index(cls)
         xmlbox = obj.find('bndbox')
