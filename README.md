@@ -4,7 +4,7 @@
 
 <p align="center">
     Data+Train+Evaluate+App 4in1 repo within the paper
-<a href='README-cn.md'>[中文版（TODO）]</a> <b><u>[English]</u></b>
+<a href='README-cn.md'>[中文版]</a> <b><u>[English]</u></b>
 </p>
 
 <p align="center">
@@ -532,12 +532,82 @@ After download, move these results to `4. Evaluate/code/data-USA/res/` too.
 
 Finally, we can run `part_algo-not_pdf-dbEval.m`. (select some algorithms and  fix it work without Ghostscript and pdfcrop)
 
-Here is the result to share. On the Caltech Reasonable test set, the MR reached 19% when FPPI=0.1. Without training Caltech data, such result is not bad.
+Here is the result to share. On the Caltech Reasonable test set, the YOLOv3 MR reached 19% when FPPI=0.1. Without training Caltech data, such result is not bad.
 
 <img src="./__READMEimages__/YOLO19.png" height="370">
 
 
+### 4.4 Model Detection display
+
+Prediction bounding-box: red | Ground-Truth: green
+
+<img src="./__READMEimages__/display12.png">
+<img src="./__READMEimages__/display3-.png">
+<img src="./__READMEimages__/display_missing_en.png">
+<img src="./__READMEimages__/display_error_en.png">
+
+
 ## 5. Web App
+
+Development Environment:
+
+1. OS: Microsoft Windows 10 Home --version 10.0.18363
+2. CPU: Intel(R) Core(TM) i7-8550U CPU@1.80GHz 1.99 GHz
+3. Memory: 8.00GB
+4. GPU: Interl(R) UHD Graphics 620 (Core graphics card)
+
+**NOTE:** For no discrete graphics card, run keras slow, which takes 3~5s to process one image. It is unbearable in development and debugging, so I convert Keras weights to cpu-friendly Darkent format.
+
+### 5.1 Keras to Darknet
+
+Before convert, we get weights rather than model from Train, so we change weights(`trained_weights_final.h5`) to model(`trained_model_final.h5`) first.
+
+And of course, You need to make sure that the model weights([3\.5 True Train process](#35-true-train-process)) are in the `5. App/keras2darknet_&_simpleEvaluate/model/` folder, default name: `trained_weights_final.h5`
+```bash
+python keras-yolo3_weights2model.py
+```
+After runing, you will get `trained_model_final.h5` in the current directory.
+
+And then, let's convert. `yolo-person.cfg` is altered from `yolov3.cfg`, which only modify anchors and last convolutional filters to fit the project.
+```bash
+python keras2darknet.py
+```
+After runing, you will get converted Darknet weights (`yolov3-keras2darknet.weights`) in the current directory.
+
+Now, just do some sample evaluation.
+
+move `yolo-person.cfg` and `yolov3-keras2darknet.weights` to `model/`
+```bash
+mv yolo-person.cfg yolov3-keras2darknet.weights model
+```
+move test dataset (`/data/test`) and image_path+annotation file (`test.txt`) from [2\.4 Batch processing](#24-batch-processing) to current folder (`5. App/keras2darknet_&_simpleEvaluate/`)
+```bash
+python testSet_darknet-out-model_eva.py
+```
+`testSet_darknet-out-model_eva.py` is almost exactly the same with `4. Evaluate/testSet_eva.py`. The only difference is that `testSet_darknet-out-model_eva.py` use `yolov3_opencv_dnn_detect.py` to predict bounding-box, but the interface is the same.
+
+Here are some results to share.
+
+There are total 10693 images, max=2.02s, min=0.98s, average=1.47s ≈ 0.68fps. It is much faster than Keras running on a computer without a independent GPU.
+
+For quality, at the level of 10693 images, display as following.
+
+|             |  correct  |   error   |  missing  | Error&Missing |
+|-------------|-----------|-----------|-----------|---------------|
+| **Keras**   | 8234(77%) | 1545(14%) | 1798(17%) | 884(8%)       |
+| **Darknet** | 8206(77%) | 1579(15%) | 1840(17%) | 932(9%)       |
+
+At the level of bounding-box, there are 16820 Ground Truth, predictions bounding_boxes number is 15183 and the number of correct(good) prediction is 12101. Finally, precision and recall and so on are shown in the following table.
+
+|             | Precision | Recall | Error Rate | Miss Rate |
+|-------------|-----------|--------|------------|-----------|
+| **Keras**   | 79.28%    | 72.29% | 20.72%     | 27.72%    |
+| **Darknet** | 79.70%    | 71.94% | 20.30%     | 28.06%    |
+
+
+In terms of these two level quality metrics, the detection effect of the converted model is few different from that of the original model, so it can be used.
+
+### 5.2 Flask Web server
 
 
 
