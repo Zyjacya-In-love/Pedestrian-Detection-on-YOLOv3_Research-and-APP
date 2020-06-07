@@ -4,7 +4,7 @@
 
 <p align="center">
     Data+Train+Evaluate+App 4in1 repo within the paper
-<a href='README-cn.md'>[中文版（TODO）]</a> <u><b>[English]</b></u>
+<a href='README-cn.md'>[中文版（TODO）]</a> <b><u>[English]</u></b>
 </p>
 
 <p align="center">
@@ -30,13 +30,18 @@ This is a repository that includes Pedestrian-Detection-on-YOLOv3_Research-and-A
 
 ## 1. Introduction
 
-**Pedestrian Detection** is a **subset** of **Object Detection** which only have one class of **person**. It aim to find out all pedestrians in the image or video's each frame, expressed location and size with **bounding-boxes**, just like this:
+**Pedestrian Detection** is a **subset** of **Object Detection** which only have one class of **person**. It aim to find out all pedestrians in the image or video's each frame, expressed location and size with **bounding-boxes**, just like this :
 
 <img src="./__READMEimages__/pedestrian-detection-demo.BMP" height="200">
 
 **YOLO (You Look Only Once)** is an advanced real-time object detection method. It is famous for processing images only once to get both location and classification, compared with previous object detection methods, while having similar accuracy with the state-of-the-art method, **YOLO run faster**.
 
 This project researches Pedestrian Detection on YOLOv3 including **Data-convert,** **keras-Train**([keras-yolo3@qqwweee](https://github.com/qqwweee/keras-yolo3)) and **model-Evaluate**. Finally I also build a **Web App** base on **Flask** to realize the visualization of pedestrian detection results of the real-time webcam, image, or video (whose language is chinese, but you can easily use by following 5. Web App or just translating).
+
+For the whole project, I use python 3.6, and for packages needed :
+```bash
+pip install -r requirements.txt
+```
 
 
 ## 2. Dataset
@@ -76,7 +81,7 @@ tar xf *.tar
 
 **Download link (about 969MB) :**
 
-1. ~~official link : [http://pascal.inrialpes.fr/data/human/](http://pascal.inrialpes.fr/data/human/)~~ down
+1. ~~official link : [ftp://ftp.inrialpes.fr/pub/lear/douze/data/INRIAPerson.tar](ftp://ftp.inrialpes.fr/pub/lear/douze/data/INRIAPerson.tar)~~ down
 
 2. Baidu Cloud Disk(中文) : [https://pan.baidu.com/s/12TYw-8U9sxz9cUu2vxzvGQ](https://pan.baidu.com/s/12TYw-8U9sxz9cUu2vxzvGQ) password: jxqu
 
@@ -166,7 +171,7 @@ After run script, the directory structure that will be **added** in the **2. Dat
 
 ## 3. YOLO Train
 
-:white_check_mark: **almost full copy from [keras-yolo3@qqwweee](https://github.com/qqwweee/keras-yolo3)**
+:white_check_mark: **Almost full copy from [keras-yolo3@qqwweee](https://github.com/qqwweee/keras-yolo3)**
 
 By the way, `job-batch32-95gpu4.sh` is the script to submit job for training model. Just as a souvenir, do not care :)
 
@@ -235,7 +240,7 @@ python convert_yolov3_weight_darkent2keras.py -w yolov3.cfg yolov3.weights yolo_
 ```bash
 vi person_classes.txt
 ```
-2\. make a floder (`model_data`) place configuration file and pretrained weights.
+2\. make a folder (`model_data`) place configuration file and pretrained weights.
 ```bash
 mkdir model_data
 ```
@@ -246,7 +251,7 @@ mv person_classes.txt yolo_anchors.txt yolo_weights.h5 ./model_data
 
 ### 3.5 True Train process
 
-Before training, don't forget move train dataset (`/data`) and image_path file (`train.txt`) from [2\.4 Batch processing](#24-batch-processing) to  current directory (`3. Train`)
+Before training, don't forget move train dataset (`/data/train`) and image_path+annotation file (`train.txt`) from [2\.4 Batch processing](#24-batch-processing) to current directory (`3. Train`)
 
 And then use [keras-yolo3@qqwweee/train.py](https://github.com/qqwweee/keras-yolo3/blob/master/train.py)'s default Train config, just save a weights per 10 epoch.
 
@@ -302,6 +307,235 @@ Here is the loss curve plot I trained model, it's 1 to 109 because it stopped ea
 
 
 ## 4. Model Evaluation
+
+Before Evaluating, require move test dataset (`/data/test`) and image_path+annotation file (`test.txt`) from [2\.4 Batch processing](#24-batch-processing) to current folder (`4. Evaluate`)
+
+And of course, You need to make sure that the model weights([3\.5 True Train process](#35-true-train-process)) are in the `4. Evaluate/model/` folder, default name: `trained_weights_final.h5`
+
+**NOTE:** **Using PASCAL metric, (predict bounding_boxes and Ground_Truth)'s IOU > 0.5 is good, to evaluate the detector**
+
+
+### 4.1 Basic metric
+
+speed : average+max+min second per image, each image's time it takes
+
+quality :
+
+1. exactly correct image number
+2. error image number
+3. missing image number
+4. Error&Missing image number
+5. Ground Truth number
+6. prediction bounding-box number
+7. number of correct prediction(good detection bounding-box)
+8. Precision
+9. Recall
+
+
+**Put ALL in `testSet_eva.py`**
+
+`testSet_eva.py`'s main func call func `evaluate()`, which has two parameters:
+
+1. `IsVsImg` : Whether to draw Ground-Truth and predict BB(bounding-box) together on the image and store new image to a new location(`4. Evaluate/test_eval/vs/`)
+2. `IsErrorMissingCorrect` : whether to copy the **missing, error, correct** image(with GT&pred_BB) to the new location and record the information to a TXT file(`4. Evaluate/test_eval/ErrorMissingCorrect.txt`)
+
+If IsVsImg==False and IsErrorMissingCorrect==False: will only print and save basic metric test result without getting any resulting images
+
+default : `IsVsImg=True,IsErrorMissingCorrect=True`
+
+The program will store the predict BB results, so you can run again without repeating predictions.
+
+```bash
+python testSet_eva.py
+```
+
+After run script, the directory structure that will be **added** in the **4. Evaluate** folder is as follows
+
+```
++
+└─test_eval
+   ├─correct
+   │  └─...
+   ├─error
+   │  └─...
+   ├─missing
+   │  └─...
+   ├─vs
+   │  └─...
+   ├─ErrorMissingCorrect.txt
+   ├─Ground_Truth.npy
+   ├─predict_bb.npy
+   └─pre_bb_sec.npy
+```
+
+`vs` include all test set images with drawing Ground-Truth and predict bounding-box together.
+
+`correct` is the exactly correct image(with GT&pred_BB) folder. `error` is the image(with GT&pred_BB) folder where image includes error prediction BB. `missing` is the image(with GT&pred_BB) folder where image includes missing prediction BB. `ErrorMissingCorrect.txt` stores missing, error, correct images info(including pred_num, gt_num, good_num)
+
+`Ground_Truth.npy` stores the Ground_Truth results, which helps to avoid repeated Ground_Truth extracted when runing again. `predict_bb.npy` is the prediction BB results file, which helps run again without repeating predictions.
+
+`pre_bb_sec.npy` stores each image's time it takes to process.
+
+
+#### 4.1.1 Model Detection speed
+
+Draw the run-time statistics, and the parameter(`-p` or `-pre_bb_sec_file`) is the path to the file of each image's seconds it takes to process prediction bounding-box.(`default='test_eval/pre_bb_sec.npy'`)
+
+```bash
+python run_time_statistics.py -p test_eval/pre_bb_sec.npy
+```
+
+Here is the statistics of image number of run-time range on the test set([2\.2 Data distribution](#22-data-distribution)) by the trained model([3\.5 True Train process](#35-true-train-process)). By the way, GPU is a `NVIDIA Tesla V100 SXM2 32GB`.
+
+<img src="./__READMEimages__/runtime.png" height="340">
+
+Don't care first image for Keras loading, it take about 3.2s >> others, remove it. So, there are total 10692 images, max=95ms, min=28ms, average=34ms ≈ 29fps, and 30-40ms is the most: 94%.
+
+
+#### 4.1.2 Model Detection quality
+
+For `testSet_eva.py`'s print, there are some results to share.
+
+There are total 10693 test images. At the level of images, display as following.
+
+|                  | correct | error | missing | Error&Missing |
+|------------------|---------|-------|---------|---------------|
+| **image number** | 8234    | 1545  | 1798    | 884           |
+| **percent**      | 77%     | 14%   | 17%     | 8%            |
+
+At the level of bounding-box, there are 16820 Ground Truth, predictions bounding_boxes number is 15339 and the number of correct(good) prediction is 12160. Finally, precision and recall and so on are shown in the following table.
+
+| Precision | Recall | Error Rate | Miss Rate |
+|-----------|--------|------------|-----------|
+| 79.28%    | 72.29% | 20.72%     | 27.72%    |
+
+
+### 4.2 PR-curve
+
+Using the PR curve drawing tool and AP computing tool provided by [Object-Detection-Metrics@rafaelpadilla](https://github.com/rafaelpadilla/Object-Detection-Metrics).
+
+**PS:** Only modify the plot and savePath part.
+
+First, we need to prepare the ground truth bounding boxes files and detected bounding boxes files(score=0) according to [Object-Detection-Metrics/README.md#how-to-use-this-project@rafaelpadilla](https://github.com/rafaelpadilla/Object-Detection-Metrics#how-to-use-this-project)'s request.
+```bash
+python testSet_PR_AP_raw_bb_data.py
+```
+After run script, the directory structure that will be **added** in the **4. Evaluate** folder is as follows
+
+```
++
+└─PRcurve_AP_raw_bb_data
+   ├─gt
+   │  └─...
+   └─pre
+      └─...
+```
+
+And then we can plot PR-curve and compute AP.
+```bash
+python pascalvoc.py -gt ./PRcurve_AP_raw_bb_data/gt -det ./PRcurve_AP_raw_bb_data/pre -sp ./PR_AP_results
+```
+After run script, the directory structure that will be **added** in the **4. Evaluate** folder is as follows
+
+```
++
+└─PR_AP_results
+   ├─person.png
+   └─results.txt
+```
+
+`person.png` is the PR-curve image. `results.txt` includes AP computed result.
+
+Here is the PR-curve for the trained model on test set. And its AP is 85.80%.
+
+<img src="./__READMEimages__/person.png" height="350">
+
+### 4.3 Caltech MR-FPPI
+
+**official link :** [http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/](http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/)
+
+In the case that the training set of the model does not contain the pictures in the Caltech dataset, make predictions on its test set, use the matlab tool provided by Caltech to draw the MR-FPPI curve, and download other algorithm test results for comparison.
+
+The following workflow main copy from [https://blog.csdn.net/qq_33614902/article/details/82622561](https://blog.csdn.net/qq_33614902/article/details/82622561) 中文 and [https://www.jianshu.com/p/6f3cf522d51b](https://www.jianshu.com/p/6f3cf522d51b) 中文
+
+#### 4.3.1 Extract images
+
+**Caltech person dataset download link :** [http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/datasets/USA/](http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/datasets/USA/)
+
+The testing data (set06-set10) consists of five sets, ~1GB each.
+
+
+```
+# download toolbox
+git clone https://github.com/pdollar/toolbox pdollar_toolbox
+
+# download extract/evaluation code
+wget http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/code/code3.2.1.zip
+mkdir code
+unzip code3.2.1.zip -d code
+
+# for video data
+cd code
+mkdir data-USA
+cd data-USA
+mkdir videos
+```
+
+move testing data (set06-set10) after decompression to `code/data-USA/videos`.
+
+open `code/dbExtract.m`, add Toolbox path.
+
+```bash
+addpath(genpath('../pdollar_toolbox'));
+```
+
+And then just run `code/dbExtract.m` to get test images in `code/data-USA/images`.
+
+#### 4.3.2 predict BB for extracted images
+
+```bash
+python Caltech_predict_BB.py
+```
+After run script, the directory structure that will be **added** in the **4. Evaluate/code/data-USA/** folder is as follows
+
+```
++
+└─res
+   └─YOLOv3
+      ├─set06
+      │  └─...
+      ├─set07
+      │  └─...
+      ├─set08
+      │  └─...
+      ├─set09
+      │  └─...
+      └─set10
+         └─...
+```
+
+`set06~set10` is the result folder of the prediction bounding-box according to the official requirements. Relative to the location of the image to store a prediction result TXT file with the same name, which include one bounding box per line. (line format is `[x_min,y_min,width,height,score]`)
+
+#### 4.3.3 Evaluate by MR-FPPI
+
+```bash
+# download annotations
+wget http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/datasets/USA/annotations.zip
+unzip annotations.zip
+```
+
+move `annotations/` to `4. Evaluate/code/data-USA/`.
+
+Download other Algorithm's results to compare. link: [http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/datasets/USA/res](http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/datasets/USA/res)
+
+After download, move these results to `4. Evaluate/code/data-USA/res/` too.
+
+Finally, we can run `part_algo-not_pdf-dbEval.m`. (select some algorithms and  fix it work without Ghostscript and pdfcrop)
+
+Here is the result to share. On the Caltech Reasonable test set, the MR reached 19% when FPPI=0.1. Without training Caltech data, such result is not bad.
+
+<img src="./__READMEimages__/YOLO19.png" height="370">
+
 
 ## 5. Web App
 
