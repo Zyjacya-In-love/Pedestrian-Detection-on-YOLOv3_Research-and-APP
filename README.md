@@ -8,9 +8,9 @@
 </p>
 
 <p align="center">
-    <img alt="GitHub" src="https://img.shields.io/github/license/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP">
-    <img src="https://img.shields.io/badge/repo%20size-37%20MB-blue" alt="Repo size">
-    <img src="https://img.shields.io/badge/code%20size-11.83%20MB-blue" alt="Code size">
+    <a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP" alt="License"></a>
+    <img src="https://img.shields.io/badge/repo%20size-9.79%20MB-blue" alt="Repo size">
+    <img src="https://img.shields.io/badge/code%20size-1.36%20MB-blue" alt="Code size">
     <img src="https://img.shields.io/github/forks/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=forks&style=social" alt="GitHub forks">
     <img src="https://img.shields.io/github/stars/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=stars&style=social" alt="GitHub stars">
     <img src="https://img.shields.io/github/last-commit/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?style=flat" alt="commit">
@@ -541,10 +541,10 @@ Here is the result to share. On the Caltech Reasonable test set, the YOLOv3 MR r
 
 Prediction bounding-box: red | Ground-Truth: green
 
-<img src="./__READMEimages__/display12.png">
-<img src="./__READMEimages__/display3-.png">
-<img src="./__READMEimages__/display_missing_en.png">
-<img src="./__READMEimages__/display_error_en.png">
+<img src="./__READMEimages__/display12.jpg">
+<img src="./__READMEimages__/display3-.jpg">
+<img src="./__READMEimages__/display_missing_en.jpg">
+<img src="./__READMEimages__/display_error_en.jpg">
 
 
 
@@ -675,7 +675,7 @@ Original web page
 
 Drop and Submit
 
-<img src="./__READMEimages__/image_pro.png" width="490">
+<img src="./__READMEimages__/image_pro.jpg" width="490">
 
 
 #### 5.2.5 Video(upload/download)
@@ -690,7 +690,7 @@ After processing done
 
 #### 5.2.6 Family portraits
 
-<img src="./__READMEimages__/APP.png">
+<img src="./__READMEimages__/APP.jpg">
 
 
 ## 6. Summary
