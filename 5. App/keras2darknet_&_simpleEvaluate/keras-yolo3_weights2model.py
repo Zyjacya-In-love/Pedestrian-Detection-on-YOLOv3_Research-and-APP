@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser(description="qqwweee-Keras-yolo3's weights to m
 parser.add_argument('-h5', dest='h5_path', default='model/trained_weights_final.h5', help="Path to keras weight *.h5")
 parser.add_argument('-cls', dest='classes_path', default='model/person_classes.txt', help="Path to class file")
 parser.add_argument('-ahr', dest='anchors_path', default='model/yolo_anchors.txt', help="Path to anchors file")
+parser.add_argument('-sf', dest='save_file', default='model/trained_model_final.h5', help='final save *.weights file')
 
 
 
@@ -59,7 +60,7 @@ def _main(args):
 
     input_shape = (416,416)
     model = YOLOv3Model(input_shape, args.h5_path, class_names, anchors)
-    model.save('trained_model_final.h5')
+    model.save(args.save_file)
 
 
 

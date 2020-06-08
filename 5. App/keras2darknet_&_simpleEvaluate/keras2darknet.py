@@ -12,9 +12,9 @@ import keras.backend as K
 
 
 parser = argparse.ArgumentParser(description="Keras model *.h5 + *.cfg convert to Darknet *.weights!!!")
-parser.add_argument('-cfg', dest='cfg_path', default='yolo-person.cfg', help="Path to Darknet cfg")
-parser.add_argument('-mh5', dest='model_h5_path', default='trained_model_final.h5', help="Path to keras model *.h5")
-parser.add_argument('-sf', dest='save_file', default='yolov3-keras2darknet.weights', help='final save *.weights file')
+parser.add_argument('-cfg', dest='cfg_path', default='model/yolo-person.cfg', help="Path to Darknet cfg")
+parser.add_argument('-mh5', dest='model_h5_path', default='model/trained_model_final.h5', help="Path to keras model *.h5")
+parser.add_argument('-sf', dest='save_file', default='model/yolov3-keras2darknet.weights', help='final save *.weights file')
 
 
 

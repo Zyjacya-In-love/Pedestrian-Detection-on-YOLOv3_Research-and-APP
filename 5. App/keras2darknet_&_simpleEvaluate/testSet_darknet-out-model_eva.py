@@ -96,25 +96,25 @@ def write_error_missing_txt_file(CorEorM, detection, this_pre, this_gt, this_goo
 
 
 
-def evaluate(IsVsImg=False, IsErrorMissing=False):
+def evaluate(IsVsImg=False, IsErrorMissingCorrect=False):
 	if IsVsImg and not os.path.exists(vs_image_save_path):
 		os.makedirs(vs_image_save_path)
 	else :
 		IsVsImg = False
-	if IsErrorMissing:
+	if IsErrorMissingCorrect:
 		if not os.path.exists(error_image_save_path):
 			os.makedirs(error_image_save_path)
 		else:
-			IsErrorMissing = False
+			IsErrorMissingCorrect = False
 		if not os.path.exists(missing_image_save_path):
 			os.makedirs(missing_image_save_path)
 		else:
-			IsErrorMissing = False
+			IsErrorMissingCorrect = False
 		if not os.path.exists(correct_image_save_path):
 			os.makedirs(correct_image_save_path)
 		else:
-			IsErrorMissing = False
-	print("IsVsImg : ", IsVsImg, "\nIsErrorMissing : ", IsErrorMissing)
+			IsErrorMissingCorrect = False
+	print("IsVsImg : ", IsVsImg, "\nIsErrorMissingCorrect : ", IsErrorMissingCorrect)
 
 	# 加载 gt、pred bb 数据，没有现算
 	if not os.path.isfile(Ground_Truth_file):
@@ -135,7 +135,7 @@ def evaluate(IsVsImg=False, IsErrorMissing=False):
 	pred_num = 0
 	gt_num = 0
 	good = 0
-	if IsErrorMissing and os.path.isfile(error_missing_correct_txt_save_file):
+	if IsErrorMissingCorrect and os.path.isfile(error_missing_correct_txt_save_file):
 		os.remove(error_missing_correct_txt_save_file)
 
 	error_img_num = 0
@@ -179,7 +179,7 @@ def evaluate(IsVsImg=False, IsErrorMissing=False):
 		if IsThisErrorImg and IsThisMissingImg:
 			ErrorMissing_img_num += 1
 
-		if IsErrorMissing:
+		if IsErrorMissingCorrect:
 			if IsThisErrorImg:
 				# 写 txt
 				write_error_missing_txt_file("error detect", detection, this_pre, this_gt, this_good)
@@ -248,7 +248,7 @@ def get_predict_bb():
 		img = cv2.imread(image_path)
 		# img = Image.open(image_path)
 		start = timer()
-		predict_bb = detector.detect_image(img)
+		predict_bb, _ = detector.detect_image(img)
 		end = timer()
 		take_seconds.append(end - start)
 		save_predict_bb.append(predict_bb)
@@ -273,7 +273,7 @@ def get_predict_bb():
 
 
 if __name__ == '__main__':
-	evaluate(IsVsImg=True,IsErrorMissing=True)
+	evaluate(IsVsImg=True,IsErrorMissingCorrect=True)
 
 
 

@@ -75,9 +75,11 @@ class YOLO_detector():
         idxs = np.array(idxs)
         # print(idxs.shape)
         if idxs.shape[0] == 0:
-            return np.array([])
+            return np.array([]), np.array([])
         boxes = np.array(boxes)
+        confidences = np.array(confidences)
         nms_boxes = boxes[idxs.flatten()]
+        nms_confindences = confidences[idxs.flatten()]
         for i in range(len(nms_boxes)):
             (x, y) = (nms_boxes[i][0], nms_boxes[i][1])
             (w, h) = (nms_boxes[i][2], nms_boxes[i][3])
@@ -102,7 +104,7 @@ class YOLO_detector():
         # cv2.imshow('after', image)
         # cv2.waitKey()
         # return image
-        return nms_boxes
+        return nms_boxes, nms_confindences
     # return boxes, nms_boxes
 
 
