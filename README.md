@@ -675,7 +675,7 @@ Original web page
 
 Drop and Submit
 
-<img src="./__READMEimages__/image_pro.jpg" width="490">
+<img src="./__READMEimages__/image_pro.png" width="490">
 
 
 #### 5.2.5 Video(upload/download)
@@ -690,7 +690,7 @@ After processing done
 
 #### 5.2.6 Family portraits
 
-<img src="./__READMEimages__/APP.jpg">
+<img src="./__READMEimages__/APP.png">
 
 
 ## 6. Summary
