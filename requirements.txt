@@ -1,0 +1,11 @@
+Keras==2.2.0
+opencv_python==3.4.8.29
+Flask_Cloudy==1.1.0
+matplotlib==2.2.0
+numpy==1.14.2
+Flask==1.1.2
+tensorflow==1.6.0
+tensorboard==1.6.0
+Pillow==7.1.2
+pycocotools==2.0.0
+PyYAML==5.3.1
