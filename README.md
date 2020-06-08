@@ -312,7 +312,7 @@ Before Evaluating, require move test dataset (`/data/test`) and image_path+annot
 
 And of course, You need to make sure that the model weights([3\.5 True Train process](#35-true-train-process)) are in the `4. Evaluate/model/` folder, default name: `trained_weights_final.h5`
 
-**NOTE:** **Using PASCAL metric, (predict bounding_boxes and Ground_Truth)'s IOU > 0.5 is good, to evaluate the detector**
+**NOTE:** **Using PASCAL metric, (predict bounding_boxes and Ground_Truth)'s IOU > 0.5 is good, to evaluate the detector. And filter box score is 0.3, NMS threshold is 0.45.**
 
 
 ### 4.1 Basic metric
@@ -547,6 +547,7 @@ Prediction bounding-box: red | Ground-Truth: green
 <img src="./__READMEimages__/display_error_en.png">
 
 
+
 ## 5. Web App
 
 Development Environment:
@@ -560,26 +561,25 @@ Development Environment:
 
 ### 5.1 Keras to Darknet
 
+```bash
+cd "keras2darknet_&_simpleEvaluate"
+```
 Before convert, we get weights rather than model from Train, so we change weights(`trained_weights_final.h5`) to model(`trained_model_final.h5`) first.
 
 And of course, You need to make sure that the model weights([3\.5 True Train process](#35-true-train-process)) are in the `5. App/keras2darknet_&_simpleEvaluate/model/` folder, default name: `trained_weights_final.h5`
 ```bash
 python keras-yolo3_weights2model.py
 ```
-After runing, you will get `trained_model_final.h5` in the current directory.
+After runing, you will get `trained_model_final.h5` in the `model/` directory.
 
-And then, let's convert. `yolo-person.cfg` is altered from `yolov3.cfg`, which only modify anchors and last convolutional filters to fit the project.
+And then, let's convert. `model/yolo-person.cfg` is altered from `yolov3.cfg`, which only modify anchors and last convolutional filters to fit the project.
 ```bash
 python keras2darknet.py
 ```
-After runing, you will get converted Darknet weights (`yolov3-keras2darknet.weights`) in the current directory.
+After runing, you will get converted Darknet weights (`yolov3-keras2darknet.weights`) in the `model/` directory.
 
 Now, just do some sample evaluation.
 
-move `yolo-person.cfg` and `yolov3-keras2darknet.weights` to `model/`
-```bash
-mv yolo-person.cfg yolov3-keras2darknet.weights model
-```
 move test dataset (`/data/test`) and image_path+annotation file (`test.txt`) from [2\.4 Batch processing](#24-batch-processing) to current folder (`5. App/keras2darknet_&_simpleEvaluate/`)
 ```bash
 python testSet_darknet-out-model_eva.py
@@ -609,6 +609,98 @@ In terms of these two level quality metrics, the detection effect of the convert
 
 ### 5.2 Flask Web server
 
+```bash
+cd server
+```
+
+Of course, You need to make sure that the model weights([5\.1 Keras to Darknet](#51-keras-to-darknet)) are in the `5. App/server/model/` folder, default name: `yolov3-keras2darknet.weights`.
+
+**PS:**
+
+1. I also provided the keras detection file `keras_yolov3_detect.py`. If you would like to detect by keras, please make sure the model weights([3\.5 True Train process](#35-true-train-process)) are in the `5. App/server/model/` folder, default name: `trained_weights_final.h5` and modify `config.ini`'s `detection_method` from `darknet` to `keras`.
+2. If you want to run without detecting person, please modify `config.ini`'s `detect_person` from `true` to `false`.
+
+
+Now, let's run the server.
+
+```bash
+python runserver.py
+```
+use `IP:port`(xx.xx.xx.xx:5000) or just [localhost:5000](http://localhost:5000) to access the web app.
+
+**PS:** If access by `IP:port`, you have to add your `IP` to `ip_white_list.yml`, OR directly change `config.ini`'s `use_ip_white_list` to `false`.
+
+
+#### 5.2.1 Index
+
+There are 4 functions in it.
+
+1. Server Camera(remote webcam)
+2. Client Camera(local webcam)
+3. Image(online preview)
+4. Video(upload/download)
+
+<img src="./__READMEimages__/index.png" width="490">
+
+#### 5.2.2 Server Camera(remote webcam)
+
+This page you can choose server camera. On my computer running the server, there are 2 cameras.
+
+<img src="./__READMEimages__/server_option.png" width="490">
+
+click to enter anyone, you would see like this:
+
+<img src="./__READMEimages__/server2.png" width="490">
+
+#### 5.2.3 Client Camera(local webcam)
+
+The second option is client camera, there are 3 method to realize, see code for details :stuck_out_tongue:.
+
+<img src="./__READMEimages__/client_option_2.png" width="490">
+
+For only one camera on the client.
+
+<img src="./__READMEimages__/client3.png" width="490">
+
+For multiple cameras on the client device.
+
+<img src="./__READMEimages__/client_camera_choose (1).png" width="490">
+
+
+#### 5.2.4 Image(online preview)
+
+Original web page
+
+<img src="./__READMEimages__/image_origin.png" width="490">
+
+Drop and Submit
+
+<img src="./__READMEimages__/image_pro.png" width="490">
+
+
+#### 5.2.5 Video(upload/download)
+
+Initial
+
+<img src="./__READMEimages__/video_init.png" width="490">
+
+After processing done
+
+<img src="./__READMEimages__/video_pro_done.png" width="490">
+
+#### 5.2.6 Family portraits
+
+<img src="./__READMEimages__/APP.png">
 
 
 ## 6. Summary
+
+The project has a detailed README and reproducible codes which takes two weeks to organize them.
+
+This project researches Pedestrian Detection on YOLOv3. A lot of references to others' code, thanks here. Whether **Data-convert,** **keras-Train** or **model-Evaluate** and **Web App**, I did the best I could and they all constitute my 3 months life.
+
+The university is about to end, I will also enter a new life, I wish myself a bright future~~
+
+<p align="center">
+    <img src="./__READMEimages__/bottom_end.webp" height="50">
+</p>
