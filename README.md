@@ -9,7 +9,7 @@
 
 <p align="center">
     <a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP" alt="License"></a>
-    <img src="https://img.shields.io/badge/repo%20size-9.79%20MB-blue" alt="Repo size">
+    <img src="https://img.shields.io/badge/repo%20size-12.4%20MB-blue" alt="Repo size">
     <img src="https://img.shields.io/badge/code%20size-1.36%20MB-blue" alt="Code size">
     <img src="https://img.shields.io/github/forks/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=forks&style=social" alt="GitHub forks">
     <img src="https://img.shields.io/github/stars/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=stars&style=social" alt="GitHub stars">
