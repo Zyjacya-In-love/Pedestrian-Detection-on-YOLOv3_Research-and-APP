@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p>共有 3 种方法供您选择</p>
+
+<ul class="option-list">
+
+    <li>方法一、将客户端发来的图片存下，然后每隔一段时间刷新图片在网页的显示
+        <span class="float-right">
+            <a class="btn" href="{{ url_for('client_camera_1') }}">Enter</a>
+        </span>
+    </li>
+    <li>方法二、改进自法一，图片存下后服务器先暂停，等图片刷新后再处理新图片
+        <span class="float-right">
+            <a class="btn" href="{{ url_for('client_camera_2') }}">Enter</a>
+        </span>
+    </li>
+    <li>方法三、全双工通信，客户端图片发到服务器，处理好，再发送回去显示
+        <span class="float-right">
+            <a class="btn" href="{{ url_for('client_camera_3') }}">Enter</a>
+        </span>
+    </li>
+
+</ul>
+<img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}" title="to~to~ro~">
+{% endblock %}

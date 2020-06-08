@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Server Camera - {{ camera_id }}</h3>
+
+<img src="{{ url_for('video_feed', camera_id=camera_id) }} " width="100%", height="auto">
+
+{% endblock %}

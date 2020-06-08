@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Client Camera</h3>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/client_camera_bootstrap.css') }}" type="text/css">
+
+    <!--WebRTC adapter-->
+    <script src="{{ url_for('static', filename='js/adapter-latest.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+
+{#    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>#}
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-select.js') }}"></script>
+
+
+    <!--摄像头选择-->
+{#    <nav class="container" id="camera_select" hidden>#}
+{##}
+{#      <hr>#}
+{#      <nav class="navbar navbar-light bg-light" role="navigation" >#}
+{#            <div class="container" style="display: inline-block;float: none;">#}
+{#                <select id="select" class="selectpicker show-menu-arrow show-tick">#}
+{#                        <option></option>#}
+{#                </select>#}
+{#                <button id="button" class="btn btn-dark" type="submit" >Get Camera</button>#}
+{#            </div>#}
+{#      </nav>#}
+{#      <hr>#}
+{##}
+{#    </nav>#}
+
+    <div class="container" id="camera_select" hidden>
+   <div class="row align-items-center justify-content-center login-center">
+     <select id="select" class="selectpicker show-menu-arrow show-tick">
+
+                        </select>
+                        <button id="button" class="btn btn-dark"  style="margin-left:5px;">Get Camera</button>
+    </div>
+         <hr>
+
+    </div>
+{#    <div id="camera_select" hidden>#}
+{#      <button id="button">Get camera</button>#}
+{#      <select id="select">#}
+{#        <option></option>#}
+{#      </select>#}
+{#    </div>#}
+
+
+    <img id="image-display" width="100%", height="auto" />
+    <video id="myVideo" autoplay height="0" width="0"></video>
+
+<script>
+    var interval_time = {{ init_interval_time|tojson }};
+    let v = document.getElementById("myVideo");
+    var camera_select = document.getElementById("camera_select");
+    //create a canvas to grab an image for upload
+    let imageCanvas = document.createElement('canvas');
+    let imageCtx = imageCanvas.getContext("2d");
+    var imageDisplay = document.getElementById("image-display");
+
+    var camera_id = 0;
+    var frame_id = 0;
+    //Add file blob to a form and post
+    function postFile(file) {
+        if(file=='data:,'){
+            console.log("empty");
+            return ;
+        }
+        frame_id += 1;
+        fetch("/webcam_image_3", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({camera_id: camera_id, frame_id: frame_id, file: file})
+        })
+        .then(resp => {
+            if (resp.ok)
+                resp.json().then(data => {
+                    displayResult(data);
+                });
+            })
+        .catch(err => {
+            console.log("An error occured", err.message);
+            // window.alert("Oops! Something went wrong.");
+        });
+    }
+
+    function displayImage(image, id) {
+        if(image=='') {
+            return ;
+        }
+        // display image on given id <img> element
+        let display = document.getElementById(id);
+        display.src = image;
+    }
+    var last_display_frame_id = 0;
+    function displayResult(data) {
+        if(data.frame_id < last_display_frame_id) return ;
+        last_display_frame_id = data.frame_id;
+        displayImage(data.result, "image-display");
+    }
+
+    //Get the image from the canvas
+    function sendImagefromCanvas() {
+
+        //Make sure the canvas is set to the current video size
+        imageCanvas.width = v.videoWidth;
+        imageCanvas.height = v.videoHeight;
+
+        imageCtx.drawImage(v, 0, 0, v.videoWidth, v.videoHeight);
+
+        //Convert the canvas to blob and post the file
+        // imageCanvas.toBlob(postFile, 'image/jpeg');
+        var data = imageCanvas.toDataURL('image/png', 1 );
+        // console.log(data);
+        postFile(data);
+    }
+
+/*
+    window.onload = function () {
+
+        //Get camera video
+        navigator.mediaDevices.getUserMedia({video: {width: 640, height: 360}, audio: false})
+            .then(stream => {
+                v.srcObject = stream;
+                navigator.mediaDevices.enumerateDevices().then(gotDevices);
+                window.setInterval(sendImagefromCanvas, interval_time);
+                        // window.setInterval(changepic, 34);
+
+            })
+            .catch(err => {
+                console.log('navigator.getUserMedia error: ', err)
+            });
+
+    };
+*/
+    var camera_num = -1;
+    //Get camera video
+    navigator.mediaDevices.getUserMedia({video: {width: 640, height: 360}, audio: false})
+        .then(stream => {
+            v.srcObject = stream;
+            if(camera_num == -1 || camera_num > 1) {
+                camera_num = 0;
+                navigator.mediaDevices.enumerateDevices().then(gotDevices);
+            }
+            window.setInterval(sendImagefromCanvas, interval_time);
+                    // window.setInterval(changepic, 34);
+
+        })
+        .catch(err => {
+            console.log('navigator.getUserMedia error: ', err)
+        });
+
+    // 摄像头选择
+    const button = document.getElementById('button');
+    const select = document.getElementById('select');
+    let currentStream;
+
+    function stopMediaTracks(stream) {
+      stream.getTracks().forEach(track => {
+        track.stop();
+      });
+    }
+
+    function gotDevices(mediaDevices) {
+      select.innerHTML = '';
+
+      // select.appendChild(document.createElement('option'));
+      let count = 0;
+      mediaDevices.forEach(mediaDevice => {
+        if (mediaDevice.kind === 'videoinput') {
+          const option = document.createElement('option');
+          option.value = mediaDevice.deviceId;
+          const label = mediaDevice.label || `Camera ${count++}`;
+          const textNode = document.createTextNode(label);
+          option.appendChild(textNode);
+          select.appendChild(option);
+          camera_num++;
+        }
+      });
+
+        // console.log(select);
+      if(camera_id == 1) {
+          select.options[1].selected = true;
+          /*
+          var option_temp = select.options[0];
+          select.options[0] = select.options[1];
+          select.options[1] = option_temp;
+           */
+      }
+      // console.log(camera_num);
+      if(camera_num > 1) {
+          camera_select.hidden = false;
+      }
+      $("#select").selectpicker('refresh');
+      $("#select").selectpicker('render');
+    }
+
+    button.addEventListener('click', event => {
+      if (typeof currentStream !== 'undefined') {
+        stopMediaTracks(currentStream);
+      }
+      const videoConstraints = {};
+      if (select.value === '') {
+        videoConstraints.facingMode = 'environment';
+      } else {
+        videoConstraints.deviceId = { exact: select.value };
+      }
+      videoConstraints.width =640;
+      videoConstraints.height=360;
+      const constraints = {
+        video: videoConstraints,
+        audio: false
+      };
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(stream => {
+          currentStream = stream;
+          v.srcObject = stream;
+          console.log(select.selectedIndex);
+          camera_id = select.selectedIndex;
+          // window.setInterval(sendImagefromCanvas, interval_time);
+          // sendImagefromCanvas(select.selectedIndex);
+          return navigator.mediaDevices.enumerateDevices();
+        })
+        .then(gotDevices)
+        .catch(error => {
+          console.error(error);
+        });
+    });
+
+    // navigator.mediaDevices.enumerateDevices().then(gotDevices);
+
+</script>
+
+{% endblock %}

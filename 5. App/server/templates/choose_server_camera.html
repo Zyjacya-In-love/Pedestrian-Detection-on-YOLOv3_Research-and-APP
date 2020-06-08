@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if CameraNumber == 0 %}
+        <p>服务器端没有摄像头</p>
+    {% else %}
+        <p>服务器端有 {{ CameraNumber }} 个摄像头供您选择</p>
+    {% endif %}
+
+<ul class="option-list">
+    {% for camera in range(CameraNumber) %}
+    <li>摄像头 {{ loop.index-1 }}
+        <span class="float-right">
+            <a class="btn" href="{{ url_for('server_camera_play', camera_id=loop.index-1) }}">Enter</a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+<img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}" title="to~to~ro~">
+{% endblock %}

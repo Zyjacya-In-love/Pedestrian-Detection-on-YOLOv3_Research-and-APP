@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Bootstrap CSS -->
+  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"> -->
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">-->
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" type="text/css">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/video_part_bootstrap.css') }}" type="text/css">
+    <!--<link rel="stylesheet" href="../css/video_part_bootstrap.css" type="text/css">-->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+
+        <div class="mb-3 mt-3">
+<h3>Upload video to Pedestrian Detection</h3>
+
+          <!--<h2 class="mb-3" style="font-weight: 300">Upload video</h2>-->
+
+          <div class="form-group mb-3">
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" name="file_input" id="file_input" oninput="input_filename();">
+              <label id="file_input_label" class="custom-file-label" for="image">Select file</label>
+            </div>
+          </div>
+
+          <button onclick="upload('{{ request.url }}');" id="upload_btn" class="btn btn-primary">Upload</button>
+
+          <button class="btn btn-primary d-none" id="loading_btn" type="button" disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Uploading...
+          </button>
+
+          <button type="button" id="cancel_btn" class="btn btn-secondary d-none">Cancel upload</button>
+          <button type="button" id="clear_btn" class="btn btn-danger d-none">Clear</button>
+
+        </div>
+
+        <div id="progress_wrapper" class="d-none">
+          <label id="progress_status"></label>
+          <div class="progress mb-3">
+            <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <div id="alert_wrapper"></div>
+
+          <!--<a id="view_file_btn" class="btn btn-primary d-none">View</a>-->
+          <!--<a id="download_btn" class="btn btn-primary d-none">Download</a>-->
+            <!--<a id="view_file_btn" class="btn btn-primary d-none" >-->
+            <!--<input type="button"  value="View"/>-->
+          <!--</a>-->
+          <button  id="view_file_btn" class="btn btn-info d-none">View</button>
+          <button  id="download_btn" class="btn btn-success d-none">Download</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Bootstrap JavaScript here -->
+
+
+<script>
+    var isFileUploadDone = false;
+    // var processDone = false;
+
+    // clear_btn for next process
+    var clear_btn = document.getElementById("clear_btn");
+
+    // my view_file_btn download_btn
+    var view_file_btn = document.getElementById("view_file_btn");
+    var download_btn = document.getElementById("download_btn");
+
+    // Get a reference to the progress bar, wrapper & status label
+    var progress = document.getElementById("progress");
+    var progress_wrapper = document.getElementById("progress_wrapper");
+    var progress_status = document.getElementById("progress_status");
+
+    // Get a reference to the 3 buttons
+    var upload_btn = document.getElementById("upload_btn");
+    var loading_btn = document.getElementById("loading_btn");
+    var cancel_btn = document.getElementById("cancel_btn");
+
+    // Get a reference to the alert wrapper
+    var alert_wrapper = document.getElementById("alert_wrapper");
+
+    // Get a reference to the file input element & input label
+    var input = document.getElementById("file_input");
+    var file_input_label = document.getElementById("file_input_label");
+
+    // Function to show alerts
+    function show_alert(message, alert) {
+        alert_wrapper.innerHTML = `
+            <div id="alert" class="alert alert-${alert} alert-dismissible fade show" role="alert">
+                <span>${message}</span>
+                <button type="button" id="close_btn" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `;
+        // close button
+        var close_btn = document.getElementById("close_btn");
+        close_btn.addEventListener("click", function () {
+            // Clear any existing alerts
+            alert_wrapper.innerHTML = "";
+        });
+    }
+    function sleep (time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    }
+    function getFileExtension(filename) {
+        return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+    }
+
+    // allow extension
+    var allow_extension = ["flv", "avi", "rmvb", "mp4"];
+    // Function to upload file
+    function upload(url) {
+
+        // Reject if the file input is empty & throw alert
+        if (!input.value) {
+            show_alert("No file selected", "warning");
+            return;
+        }
+        var file_ex = getFileExtension(input.files[0].name);
+        if( allow_extension.indexOf(file_ex) ==-1 ) {
+            var mess = "Only video file (";
+            for (i = 0; i < allow_extension.length; i++) {
+                mess += ('*.' + allow_extension[i]);
+                if(i != allow_extension.length-1) {
+                    mess += ', ';
+                }
+            }
+            mess += ')';
+            show_alert(mess, "warning");
+            return;
+        }
+        // Create a new FormData instance
+        var data = new FormData();
+
+        // Create a XMLHTTPRequest instance
+        var request = new XMLHttpRequest();
+
+        // Set the response type
+        request.responseType = "json";
+
+        // Clear any existing alerts
+        alert_wrapper.innerHTML = "";
+
+        // Disable the input during upload
+        input.disabled = true;
+
+        // Hide the upload button
+        upload_btn.classList.add("d-none");
+
+        // Show the loading button
+        loading_btn.classList.remove("d-none");
+
+        // Show the cancel button
+        cancel_btn.classList.remove("d-none");
+
+        // Show the progress bar
+        progress_wrapper.classList.remove("d-none");
+
+        // Get a reference to the file
+        var file = input.files[0];
+
+        // Get a reference to the filename
+        var filename = file.name;
+
+        // Get a reference to the filesize & set a cookie
+        var filesize = file.size;
+        document.cookie = `filesize=${filesize}`;
+
+        // Append the file to the FormData instance
+        data.append("file", file);
+
+        // request progress handler
+        request.upload.addEventListener("progress", function (e) {
+            // Get the loaded amount and total filesize (bytes)
+            var loaded = e.loaded;
+            var total = e.total;
+
+            // Calculate percent uploaded
+            var percent_complete = (loaded / total) * 100;
+
+            // Update the progress text and progress bar
+            progress.setAttribute("style", `width: ${Math.floor(percent_complete)}%`);
+            progress_status.innerText = `${Math.floor(percent_complete)}% uploaded`;
+            if(Math.floor(percent_complete) == 100) {
+                // wait 1s to perform 100% complete
+                sleep(1000).then(()=>{
+                    // Hide the cancel button
+                    cancel_btn.classList.add("d-none");
+                    // change loading content
+                    loading_btn.innerText = 'Processing...';
+                    // Update the progress text and progress bar
+                    progress.setAttribute("style", `width: 0%`);
+                    progress_status.innerText = `0% uploaded`;
+                    isFileUploadDone = true;
+                    show_alert('File uploaded, Pedestrian Detection...', 'success');
+                });
+        // console.log('ffffffff');
+            }
+        });
+
+        var sitv = setInterval(function searchTask(){
+            if(!isFileUploadDone) return ;
+            var prog_url = location.protocol + '//' + document.domain + ':' + location.port + '/video_process_task';
+            $.getJSON(prog_url, function(data){
+                var res = data.res;
+                var time_left = data.time_left;
+                // Update the progress text and progress bar
+                progress.setAttribute("style", `width: ${res}%`);
+                progress_status.innerText = `${res}% processed | Time left: ${time_left}`;
+            });
+        }, 1000);
+
+        // request load handler (transfer complete)
+        request.addEventListener("load", function (e) {
+
+            if (request.status == 200) {
+                // processDone = true;
+                res = 100;
+                progress.setAttribute("style", `width: ${res}%`);
+                progress_status.innerText = `${res}% processed`;
+                show_alert(`${request.response.message}`, "success");
+                clearInterval(sitv);
+
+                // set onclick link
+                view_file_btn.onclick = function view_video(){
+                    window.open(request.response.view_url);
+                };
+                download_btn.onclick = function download_file(){
+                    window.location.href=request.response.download_url;
+                };
+
+                view_file_btn.classList.remove("d-none");
+                download_btn.classList.remove("d-none");
+                clear_btn.classList.remove("d-none");
+            }
+            else {
+                show_alert(`Error uploading file`, "danger");
+            }
+            // reset();
+
+        });
+
+        // request error handler
+        request.addEventListener("error", function (e) {
+            reset();
+            show_alert(`Error uploading file`, "warning");
+        });
+
+        // request abort handler
+        request.addEventListener("abort", function (e) {
+            reset();
+            show_alert(`Upload cancelled`, "primary");
+        });
+
+        // Open and send the request
+        request.open("post", url);
+        request.send(data);
+
+        cancel_btn.addEventListener("click", function () {
+            request.abort();
+        });
+        clear_btn.addEventListener("click", function () {
+            reset();
+            show_alert(`Reset success`, "success");
+        });
+
+    }
+
+    // Function to update the input placeholder
+    function input_filename() {
+        file_input_label.innerText = input.files[0].name;
+    }
+
+    // Function to reset the page
+    function reset() {
+        // my Hide
+        view_file_btn.classList.add("d-none");
+        download_btn.classList.add("d-none");
+        clear_btn.classList.add("d-none");
+        // two flag
+        isFileUploadDone = false;
+        // processDone = false;
+        // loading_btn reset
+        loading_btn.innerText = 'Uploading...';
+        // Clear the input
+        input.value = null;
+
+        // Hide the cancel button
+        cancel_btn.classList.add("d-none");
+
+        // Reset the input element
+        input.disabled = false;
+
+        // Show the upload button
+        upload_btn.classList.remove("d-none");
+
+        // Hide the loading button
+        loading_btn.classList.add("d-none");
+
+        // Hide the progress bar
+        progress_wrapper.classList.add("d-none");
+
+        // Reset the progress bar state
+        progress.setAttribute("style", `width: 0%`);
+
+        // Reset the input placeholder
+        file_input_label.innerText = "Select file";
+
+    }
+</script>
+
+{% endblock %}

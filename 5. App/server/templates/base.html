@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{#        <meta name="apple-mobile-web-app-capable" content="yes">#}
+      <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+    <title>{{ title }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+
+    {% endblock %}
+</head>
+<body>
+    {% for message in get_flashed_messages() %}
+        <div class="alert">{{ message }}</div>
+    {% endfor %}
+    <style>
+    a img{border:none} .aligning *{ vertical-align:middle; }
+    </style>
+    <h2 class="aligning">
+        <!--<img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">-->
+        <img alt="Jiangnan" class="jiangnan" src="{{ url_for('static', filename='images/jiangnan.png') }}">
+        <img alt="YOLO" class="yolo" src="{{ url_for('static', filename='images/yolo.png') }}">
+        <!--{{ title }}-->
+        <span style="vertical-align:middle;font-size:28px;font-family:黑体;">
+            {{ title }}
+        </span>
+    </h2>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+
+
+        </ul>
+    </nav>
+    {% block content %}{% endblock %}
+    <footer>
+        <small>&copy; 2020 <a href="https://github.com/Zyjacya-In-love">Xu Ziqiang</a></small>
+	</footer>
+</body>
+</html>

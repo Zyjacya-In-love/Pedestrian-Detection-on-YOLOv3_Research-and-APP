@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>{{ options|length }} options</p>
+
+<ul class="option-list">
+    {% for option in options %}
+    <li>{{ option.title }}
+        <span class="float-right">
+            <a class="btn" href="{{ url_for('distribute', option_id=loop.index-1) }}">Enter</a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+<img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}" title="to~to~ro~">
+{% endblock %}
