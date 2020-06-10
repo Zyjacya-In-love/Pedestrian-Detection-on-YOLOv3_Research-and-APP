@@ -23,12 +23,38 @@
 下面仅仅是整个项目的工作流程和 repo 中代码文件的使用方法。
 
 ### 目录
-- <a href='#1-Introduction'>1. Introduction</a>
-- <a href='#2-Data'>2. Data</a>
-- <a href='#3-YOLO-Train'>3. YOLO Train</a>
-- <a href='#4-Model-Evaluation'>4. Model Evaluation</a>
-- <a href='#5-Web-App'>5. Web App</a>
-- <a href='#6-Summary'>6. Summary</a>
+* [1\. Introduction](#1-introduction)
+* [2\. Dataset](#2-dataset)
+    * [2\.1 Download](#21-download)
+        * [Microsoft COCO](#microsoft-coco)
+        * [PASCAL VOC](#pascal-voc)
+        * [INRIA Person Dataset](#inria-person-dataset)
+    * [2\.2 Data distribution &amp; Convert annotation format](#22-data-distribution--convert-annotation-format)
+    * [2\.3 Batch processing](#23-batch-processing)
+* [3\. YOLO Train](#3-yolo-train)
+    * [3\.1 Network &amp; Loss](#31-network--loss)
+    * [3\.2 Get Anchor](#32-get-anchor)
+    * [3\.3 Pretrained Weights](#33-pretrained-weights)
+    * [3\.4 Prepare files needed for training](#34-prepare-files-needed-for-training)
+    * [3\.5 True Train process](#35-true-train-process)
+    * [3\.6 Loss curve plot](#36-loss-curve-plot)
+* [4\. Model Evaluation](#4-model-evaluation)
+    * [4\.1 Basic metric](#41-basic-metric)
+        * [4\.1\.1 Model Detection speed](#411-model-detection-speed)
+        * [4\.1\.2 Model Detection quality](#412-model-detection-quality)
+    * [4\.2 PR\-curve](#42-pr-curve)
+    * [4\.3 Caltech MR\-FPPI](#43-caltech-mr-fppi)
+        * [4\.3\.1 Extract images](#431-extract-images)
+        * [4\.3\.2 predict BB for extracted images](#432-predict-bb-for-extracted-images)
+        * [4\.3\.3 Evaluate by MR\-FPPI](#433-evaluate-by-mr-fppi)
+    * [4\.4 Model Detection display](#44-model-detection-display)
+* [5\. Web App](#5-web-app)
+    * [5\.1 Keras to Darknet](#51-keras-to-darknet)
+    * [5\.2 Flask Web server](#52-flask-web-server)
+* [6\. Summary](#6-summary)
+
+
+
 
 
 ## 1. Introduction
@@ -41,12 +67,12 @@ pip install -r requirements.txt
 ```
 
 
-## 2. Data
+## 2. Dataset
 
 选择后下载的共 4 个数据集： Microsoft 的 COCO 数据集、PASCAL 的 VOC 数据集、INRIA 行人数据集以及 Caltech 行人数据集，前 3 个用于训练和基础测试，Caltech 用于和其他算法模型比较。其中 COCO 和 VOC 包含多类别甚至多方向，只使用其中的 **person** 类的 **目标检测** 部分注释。而 Caltech 数据集仅用于比较，未多做研究，稍具体的操作将在 **4. Model Evaluation** 中说明。
 
 ### 2.1 Download
-#### COCO
+#### Microsoft COCO
 
 **官网：** [http://cocodataset.org/](http://cocodataset.org/)
 
@@ -79,7 +105,7 @@ tar xf VOCtest_06-Nov-2007.tar
 
 解压后的文件夹中 ‘/JPEGImages’ 中是图片，‘/Annotations’ 中包含以 xml 文件存储的目标检测注释。
 
-#### INRIA
+#### INRIA Person Dataset
 
 ~~**官网：** [http://pascal.inrialpes.fr/data/human/](http://pascal.inrialpes.fr/data/human/)~~ 无法访问了
 
