@@ -9,7 +9,7 @@
 
 <p align="center">
     <a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP" alt="License"></a>
-    <img src="https://img.shields.io/badge/repo%20size-12.4%20MB-blue" alt="Repo size">
+    <img src="https://img.shields.io/badge/repo%20size-12.9%20MB-blue" alt="Repo size">
     <img src="https://img.shields.io/badge/code%20size-1.36%20MB-orange" alt="Code size">
     <img src="https://img.shields.io/github/forks/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=forks&style=social" alt="GitHub forks">
     <img src="https://img.shields.io/github/stars/Zyjacya-In-love/Pedestrian-Detection-on-YOLOv3_Research-and-APP?label=stars&style=social" alt="GitHub stars">
@@ -261,7 +261,8 @@ follow [keras-yolo3@qqwweee/README.md](https://github.com/qqwweee/keras-yolo3/bl
 ```bash
 wget https://pjreddie.com/media/files/yolov3.weights
 ```
-2\. Convert the Darknet YOLO model(\*.cfg+\*.weights) to a Keras model(\*.h5).
+2\. Convert the Darknet YOLO model weights(\*.cfg+\*.weights) to a Keras model weights(\*.h5).
+
 ```bash
 python convert_yolov3_weight_darkent2keras.py -w yolov3.cfg yolov3.weights yolo_weights.h5
 ```
@@ -369,7 +370,7 @@ quality :
 `testSet_eva.py`'s main func call func `evaluate()`, which has two parameters:
 
 1. `IsVsImg` : Whether to draw Ground-Truth and predict BB(bounding-box) together on the image and store new image to a new location(`4. Evaluate/test_eval/vs/`)
-2. `IsErrorMissingCorrect` : whether to copy the **missing, error, correct** image(with GT&pred_BB) to the new location and record the information to a TXT file(`4. Evaluate/test_eval/ErrorMissingCorrect.txt`)
+2. `IsErrorMissingCorrect` : Whether to copy the **missing, error, correct** image(with GT&pred_BB) to the new location and record the information to a TXT file(`4. Evaluate/test_eval/ErrorMissingCorrect.txt`)
 
 If IsVsImg==False and IsErrorMissingCorrect==False: will only print and save basic metric test result without getting any resulting images
 
@@ -562,7 +563,7 @@ Download other Algorithm's results to compare. link: [http://www.vision.caltech.
 
 After download, move these results to `4. Evaluate/code/data-USA/res/` too.
 
-Finally, we can run `part_algo-not_pdf-dbEval.m`. (select some algorithms and  fix it work without Ghostscript and pdfcrop)
+Finally, we can run `part_algo-not_pdf-dbEval.m`. (select some algorithms and fix it work without Ghostscript and pdfcrop)
 
 Here is the result to share. On the Caltech Reasonable test set, the YOLOv3 MR reached 19% when FPPI=0.1. Without training Caltech data, such result is not bad.
 
