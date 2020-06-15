@@ -462,6 +462,8 @@ unzip annotations.zip
 
 详见论文 # 第5章 基于Flask的行人检测应用设计
 
+:bangbang: **NOTE: 网站目前仅允许一个客户端访问！！！**
+
 ### 5.1 Keras to Darknet
 
 ```bash

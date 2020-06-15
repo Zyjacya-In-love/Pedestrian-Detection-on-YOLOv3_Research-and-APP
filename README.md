@@ -583,6 +583,8 @@ Prediction bounding-box: red | Ground-Truth: green
 
 ## 5. Web App
 
+:bangbang: **NOTE: The Web App currently only allows one client to access!!!**
+
 Development Environment:
 
 1. OS: Microsoft Windows 10 Home --version 10.0.18363
