@@ -583,7 +583,7 @@ Prediction bounding-box: red | Ground-Truth: green
 
 ## 5. Web App
 
-:bangbang: **NOTE: The Web App currently only allows one client to access!!!**
+:heavy_exclamation_mark: :bell: :heavy_exclamation_mark: **NOTE: The Web App currently only allows one client to access!!!**
 
 Development Environment:
 
