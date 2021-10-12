@@ -1,5 +1,5 @@
 Keras==2.2.0
-opencv_python==3.4.8.29
+opencv_python==4.2.0.32
 Flask_Cloudy==1.1.0
 matplotlib==2.2.0
 numpy==1.14.2
